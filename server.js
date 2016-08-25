@@ -30,6 +30,7 @@ app.get('/', function(req, res) {
 });
 
 var io = sio.listen(app);
+io.set( 'log level' , 1);
 
 // 생성된 방을 키값으로 관리
 var socketRoom = {};
@@ -103,6 +104,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('selectCard', function(data) {
     var roomKey = socketRoom[socket.id];
 
+    if(roomKey == undefined) {
+      //return;
+      roomKey = socketRoom[data.socketId];
+    }
+
     // 게임정보를 가져와
     var gameInfo = gameInfos[roomKey];
 
@@ -111,7 +117,7 @@ io.sockets.on('connection', function (socket) {
       // 검증 통과했으면
 
       // 턴을 변경
-      if(roomKey == socket.id) {
+      if(roomKey == data.socketId) {
         gameInfo.turn = 2;
       } else {
         gameInfo.turn = 1;
@@ -149,7 +155,7 @@ io.sockets.on('connection', function (socket) {
 
         // 플레이어 점수 반영
         for(var i = 0; i < gameInfo.players.length; i++) {
-          if(gameInfo.players[i].key == socket.id) {
+          if(gameInfo.players[i].key == data.socketId) {
             //gameInfo.players[i].score += resultValue;
             // 결과로 나온 카드를 만들어 준다.
             var nextSeq = parseInt(gameInfo.players[i].cards[gameInfo.players[i].cards.length - 1].seq) + 1;
@@ -167,7 +173,7 @@ io.sockets.on('connection', function (socket) {
       // 선택한 카드를 삭제
       for(var i = 0; i < gameInfo.players.length; i++) {
 
-        if(gameInfo.players[i].key == socket.id) {
+        if(gameInfo.players[i].key == data.socketId) {
           for(var j = 0; j < gameInfo.players[i].cards.length; j++) {
             if(gameInfo.players[i].cards[j].seq == data.cardSeq) {
                 // 선택한 배열요소를 삭제한다!
