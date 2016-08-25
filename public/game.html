@@ -199,7 +199,7 @@
   </style>
 
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-  <script type="text/javascript" src="soket.io.js"></script>
+  <script type="text/javascript" src="http://number-battle.herokuapp.com/soket.io.js"></script>
 
   <script>
 
@@ -212,60 +212,60 @@
       socket = io.connect('http://number-battle.herokuapp.com/');
 
 
-      // Á¢¼Ó½Ã
+      // ì ‘ì†ì‹œ
       socket.on("connected", function(data) {
-        console.log("Á¢¼ÓµÊ");
+        console.log("ì ‘ì†ë¨");
       });
 
-      // ¹æ»ı¼º
+      // ë°©ìƒì„±
       socket.on("createRoom", function(data) {
-        console.log("¹æ»ı¼º");
-        $("#startGame").html("´Ù¸¥ ÇÃ·¹ÀÌ¾î¸¦ ±â´Ù¸®´Â Áß...");
+        console.log("ë°©ìƒì„±");
+        $("#startGame").html("ë‹¤ë¥¸ í”Œë ˆì´ì–´ë¥¼ ê¸°ë‹¤ë¦¬ëŠ” ì¤‘...");
       });
 
-      // ¿¬°áµÊ
+      // ì—°ê²°ë¨
       socket.on("joinRoom", function(data) {
-        console.log("¿¬°áµÊ");
+        console.log("ì—°ê²°ë¨");
         $("#wrap").show();
         $("#footer").show();
         $("#header").hide();
 
-        // ·»´õ¸µ
+        // ë Œë”ë§
         gameRender(data);
       });
 
-      // ¹æ¶°³²
+      // ë°©ë– ë‚¨
       socket.on("leaveRoom", function(data) {
-          console.log("¹æ¶°³²");
+          console.log("ë°©ë– ë‚¨");
           $("#wrap").hide();
           $("#footer").hide();
           $("#header").show();
       });
 
-      // Ä«µå ¼±ÅÃ
+      // ì¹´ë“œ ì„ íƒ
       socket.on("selectCardComplete", function(data) {
         gameRender(data);
       });
 
-      // Ä«µå ¼±ÅÃ
+      // ì¹´ë“œ ì„ íƒ
       socket.on("gameComplete", function(data) {
         console.log(data.winner);
         alert("player"+data.winner+" Win!");
         gameRender(data.gameInfo);
       });
 
-      // °ÔÀÓ½ºÅ¸Æ®
+      // ê²Œì„ìŠ¤íƒ€íŠ¸
       $("#startGame").click(function() {
         socket.emit("startGame");
       });
 
-      // °ÔÀÓÁ¾·á
+      // ê²Œì„ì¢…ë£Œ
       $("#endGame").click(function() {
         socket.emit("endGame");
       });
     });
 
-    // ·»´õ¸µ
+    // ë Œë”ë§
     function gameRender(data) {
       $("#preResult").html("?");
 
@@ -274,7 +274,7 @@
       $("p[id^=playerCardsNumber]").removeClass("buttonSelectAble");
       $("p[id^=playerCardsOperator]").removeClass("buttonSelectAble");
 
-      // ¹æÁ¤º¸
+      // ë°©ì •ë³´
       $("#roomKey").html(data.roomKey);
       $("#turn").html(data.turn);
       $("#turnType").html(data.turnType);
@@ -285,7 +285,7 @@
 
       $("#winner").html(data.winner);
 
-      // ÇÃ·¹ÀÌ¾î Á¤º¸
+      // í”Œë ˆì´ì–´ ì •ë³´
       $.each(data.players, function(index, players) {
         var playerNumber = index + 1;
         var playerDisplayNumber;
@@ -296,7 +296,7 @@
           playerDisplayNumber = 2;
         }
 
-        // Å°
+        // í‚¤
         $("#playerKey"+playerDisplayNumber).html(players.key);
 
 
@@ -308,31 +308,31 @@
             $("#playerCardsOperator"+playerDisplayNumber).append('<button class="buttonOperator" onclick="selectCard('+playerNumber+', '+card.seq+', '+card.type+', \''+card.value+'\')">'+card.value+'</button>');
           }
 
-          // Ä«µå .buttonSelectAble ¼±ÅÃ°¡´ÉÇÑ Ä«µå css
-          // ³ªÀÇ ÅÏÀÌ¸é ³¾ ¼ö ÀÖ´Â Ä«µå¿¡ border Ã³¸®
+          // ì¹´ë“œ .buttonSelectAble ì„ íƒê°€ëŠ¥í•œ ì¹´ë“œ css
+          // ë‚˜ì˜ í„´ì´ë©´ ë‚¼ ìˆ˜ ìˆëŠ” ì¹´ë“œì— border ì²˜ë¦¬
           if(data.turn == 1) {
             if(playerNumber == 1) {
               if(data.turnType == 1) {
                 $("#playerCardsNumber"+playerDisplayNumber).addClass("buttonSelectAble");
-                $("#playerStatus"+playerDisplayNumber).html("¼ıÀÚ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.");
+                $("#playerStatus"+playerDisplayNumber).html("ìˆ«ìë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.");
               } else {
                 $("#playerCardsOperator"+playerDisplayNumber).addClass("buttonSelectAble");
-                $("#playerStatus"+playerDisplayNumber).html("¿¬»êÀÚ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.");
+                $("#playerStatus"+playerDisplayNumber).html("ì—°ì‚°ìë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.");
               }
             } else {
-              $("#playerStatus"+playerDisplayNumber).html("»ó´ë ÇÃ·¹ÀÌ¾î ¼±ÅÃÀ» ±â´Ù¸®´ÂÁß..");
+              $("#playerStatus"+playerDisplayNumber).html("ìƒëŒ€ í”Œë ˆì´ì–´ ì„ íƒì„ ê¸°ë‹¤ë¦¬ëŠ”ì¤‘..");
             }
           } else {
             if(playerNumber == 2) {
               if(data.turnType == 1) {
                 $("#playerCardsNumber"+playerDisplayNumber).addClass("buttonSelectAble");
-                $("#playerStatus"+playerDisplayNumber).html("¼ıÀÚ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.");
+                $("#playerStatus"+playerDisplayNumber).html("ìˆ«ìë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.");
               } else {
                 $("#playerCardsOperator"+playerDisplayNumber).addClass("buttonSelectAble");
-                $("#playerStatus"+playerDisplayNumber).html("¿¬»êÀÚ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.");
+                $("#playerStatus"+playerDisplayNumber).html("ì—°ì‚°ìë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.");
               }
             } else {
-              $("#playerStatus"+playerDisplayNumber).html("»ó´ë ÇÃ·¹ÀÌ¾î ¼±ÅÃÀ» ±â´Ù¸®´ÂÁß..");
+              $("#playerStatus"+playerDisplayNumber).html("ìƒëŒ€ í”Œë ˆì´ì–´ ì„ íƒì„ ê¸°ë‹¤ë¦¬ëŠ”ì¤‘..");
             }
           }
         });
@@ -345,7 +345,7 @@
       });
 
       $(".buttonSelectAble button").bind('touchstart', function(e) {
-        // ¹Ì¸®º¸±â ½ÃÀü
+        // ë¯¸ë¦¬ë³´ê¸° ì‹œì „
         startPreView($(this).html());
       });
 
@@ -357,7 +357,7 @@
 
       });
 
-      // ½Â¸®ÀÚ Ç¥½Ã
+      // ìŠ¹ë¦¬ì í‘œì‹œ
       switch (data.winner) {
         case 1 : alert('player1 win!'); break;
         case 2 : alert('player2 win!'); break;
@@ -367,12 +367,12 @@
 
     }
 
-    // Ä«µå ¼±ÅÃ
+    // ì¹´ë“œ ì„ íƒ
     function selectCard(playerNumber, cardSeq, cardType, cardValue) {
       socket.emit("selectCard", {playerNumber:playerNumber, cardSeq:cardSeq, cardType:cardType, cardValue:cardValue});
     }
 
-    // ¹Ì¸®º¸±â
+    // ë¯¸ë¦¬ë³´ê¸°
     function startPreView(val) {
 
       if($("#number1").html() == "?") {
@@ -396,7 +396,7 @@
           case '+' : resultValue = number1 + number2; break;
           case '-' : resultValue = number1 - number2; break;
           case '*' : resultValue = number1 * number2; break;
-          case '/' : resultValue = Math.floor(number1 / number2); break; // ¼Ò¼öÁ¡ ¹ö¸²
+          case '/' : resultValue = Math.floor(number1 / number2); break; // ì†Œìˆ˜ì  ë²„ë¦¼
           default : break;
         }
 
@@ -406,7 +406,7 @@
       }
     }
 
-    // ¹Ì¸®º¸±â Á¾·á
+    // ë¯¸ë¦¬ë³´ê¸° ì¢…ë£Œ
     function endPreView(number1, operator, number2) {
       $("#number1").html(number1);
       $("#operator").html(operator);
@@ -418,19 +418,19 @@
 </head>
 <body>
   <div id="header">
-    <button id="startGame" class="buttonStart">°ÔÀÓ½ÃÀÛ</button>
+    <button id="startGame" class="buttonStart">ê²Œì„ì‹œì‘</button>
   </div>
   <div id="wrap">
     <div id="player2">
       <p id="playerCardsOperator2"></p>
       <p id="playerCardsNumber2"></p>
-      <p id="playerName2">»ó´ë ÇÃ·¹ÀÌ¾î</p>
+      <p id="playerName2">ìƒëŒ€ í”Œë ˆì´ì–´</p>
     </div>
     <div id="calc">
       <button id="number1" class="buttonNumber"></button><button id="operator" class="buttonOperator"></button><button id="number2" class="buttonNumber"></button><button class="buttonOperator">=</button><button id="preResult" class="buttonResult">?</button>
     </div>
     <div id="player1">
-      <p id="playerName1">³ª</p>
+      <p id="playerName1">ë‚˜</p>
       <p id="playerCardsNumber1"></p>
       <p id="playerCardsOperator1"></p>
     </div>
@@ -438,7 +438,7 @@
   </div>
   <div id="footer">
     <p id="playerStatus1"></p>
-    <button id="endGame" class="buttonEnd">°ÔÀÓÁ¾·á</button>
+    <button id="endGame" class="buttonEnd">ê²Œì„ì¢…ë£Œ</button>
   </div>
 
 </body>

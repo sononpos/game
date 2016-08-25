@@ -35,7 +35,7 @@ app.configure(function () {
  */
 
 app.get('/', function (req, res) {
-  res.render('index', { layout: false });
+  res.sendFile('game.html');
 });
 
 /**
