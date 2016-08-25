@@ -60,7 +60,6 @@
 
     #footer {
       max-width: 1024px;
-      display:none;
     }
 
     #calc {
@@ -207,8 +206,7 @@
 
     $(document).ready(function() {
 
-      //socket = io.connect('http://number-battle-server.herokuapp.com:8080');
-      //socket = io.connect('http://localhost:8080');
+      //socket = io.connect('http://localhost:3000');
       socket = io.connect('http://number-battle.herokuapp.com/');
 
 
@@ -227,7 +225,6 @@
       socket.on("joinRoom", function(data) {
         console.log("연결됨");
         $("#wrap").show();
-        $("#footer").show();
         $("#header").hide();
 
         // 렌더링
@@ -238,8 +235,8 @@
       socket.on("leaveRoom", function(data) {
           console.log("방떠남");
           $("#wrap").hide();
-          $("#footer").hide();
           $("#header").show();
+          $("#startGame").html("게임시작");
       });
 
       // 카드 선택
@@ -433,13 +430,14 @@
       <p id="playerName1">나</p>
       <p id="playerCardsNumber1"></p>
       <p id="playerCardsOperator1"></p>
+      <p id="playerStatus1"></p>
     </div>
 
   </div>
   <div id="footer">
-    <p id="playerStatus1"></p>
     <button id="endGame" class="buttonEnd">게임종료</button>
   </div>
+
 
 </body>
 
