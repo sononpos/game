@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>client</title>
+
+  <style>
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed,
+    figure, figcaption, footer, header, hgroup,
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+    	margin: 0;
+    	padding: 0;
+    	border: 0;
+    	font-size: 100%;
+    	font: inherit;
+    	vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure,
+    footer, header, hgroup, menu, nav, section {
+    	display: block;
+    }
+    body {
+    	line-height: 1;
+    }
+    ol, ul {
+    	list-style: none;
+    }
+    blockquote, q {
+    	quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+    	content: '';
+    	content: none;
+    }
+    table {
+    	border-collapse: collapse;
+    	border-spacing: 0;
+    }
+
+    #wrap {
+      max-width: 1024px;
+      display:none;
+    }
+
+    #header {
+      max-width: 1024px;
+      top : 100%;
+    }
+
+    #footer {
+      max-width: 1024px;
+      display:none;
+    }
+
+    #calc {
+      max-width: 1024px;
+      margin:20px 0 20px 0;
+    }
+
+    .buttonStart {
+      background-color: #008CBA;
+      color: white;
+      padding: 15px 32px;
+      margin:0 auto;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 30px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      width:100%;
+      height:800px;
+      cursor:pointer;
+    }
+
+    .buttonEnd {
+      background-color: #000000;
+      color: white;
+      padding: 15px 32px;
+      margin:0 auto;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 30px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      width:100%;
+      height:100px;
+      cursor:pointer;
+    }
+
+    #playerStatus1, #playerStatus2 {
+      background-color: #FBEFF2;
+      color: black;
+      padding: 15px 32px;
+      margin:0 auto;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 30px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      width:100%;
+      height:40px;
+      cursor:pointer;
+    }
+
+    #playerName1, #playerName2 {
+      background-color: #FBEFF2;
+      color: black;
+      padding: 15px 32px;
+      margin:0 auto;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 30px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      width:100%;
+      height:40px;
+      cursor:pointer;
+    }
+
+
+
+    .buttonNumber {
+      background-color: #008CBA;
+      color: white;
+      padding: 15px 32px;
+      margin:0 auto;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 30px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      width:20%;
+      height:120px;
+    }
+
+    .buttonNumber:hover {
+      background-color: white; /* Blue */
+      color: black;
+      width:20%;
+      height:120px;
+    }
+
+    .buttonOperator {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 32px;
+      margin:0 auto;;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 30px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      width:20%;
+      height:120px;
+    }
+
+    .buttonOperator:hover {
+      background-color: white; /* Green */
+      color: black;
+      width:20%;
+      height:120px;
+    }
+
+    .buttonResult {
+      background-color: #f44336;
+      color: white;
+      padding: 15px 32px;
+      margin:0 auto;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 30px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      width:20%;
+      height:120px;
+    }
+
+    .buttonSelectAble {
+      border: 4px solid #f44336;
+    }
+  </style>
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script type="text/javascript" src="soket.io.js"></script>
+
+  <script>
+
+    var socket;
+
+    $(document).ready(function() {
+
+      //socket = io.connect('http://number-battle-server.herokuapp.com:8080');
+      //socket = io.connect('http://localhost:8080');
+      socket = io.connect('http://number-battle.herokuapp.com/');
+
+
+      // 접속시
+      socket.on("connected", function(data) {
+        console.log("접속됨");
+      });
+
+      // 방생성
+      socket.on("createRoom", function(data) {
+        console.log("방생성");
+        $("#startGame").html("다른 플레이어를 기다리는 중...");
+      });
+
+      // 연결됨
+      socket.on("joinRoom", function(data) {
+        console.log("연결됨");
+        $("#wrap").show();
+        $("#footer").show();
+        $("#header").hide();
+
+        // 렌더링
+        gameRender(data);
+      });
+
+      // 방떠남
+      socket.on("leaveRoom", function(data) {
+          console.log("방떠남");
+          $("#wrap").hide();
+          $("#footer").hide();
+          $("#header").show();
+      });
+
+      // 카드 선택
+      socket.on("selectCardComplete", function(data) {
+        gameRender(data);
+      });
+
+      // 카드 선택
+      socket.on("gameComplete", function(data) {
+        console.log(data.winner);
+        alert("player"+data.winner+" Win!");
+        gameRender(data.gameInfo);
+      });
+
+      // 게임스타트
+      $("#startGame").click(function() {
+        socket.emit("startGame");
+      });
+
+      // 게임종료
+      $("#endGame").click(function() {
+        socket.emit("endGame");
+      });
+    });
+
+    // 렌더링
+    function gameRender(data) {
+      $("#preResult").html("?");
+
+      $("p[id^=playerCardsNumber]").html('');
+      $("p[id^=playerCardsOperator]").html('');
+      $("p[id^=playerCardsNumber]").removeClass("buttonSelectAble");
+      $("p[id^=playerCardsOperator]").removeClass("buttonSelectAble");
+
+      // 방정보
+      $("#roomKey").html(data.roomKey);
+      $("#turn").html(data.turn);
+      $("#turnType").html(data.turnType);
+
+      $("#number1").html(data.number1);
+      $("#operator").html(data.operator);
+      $("#number2").html(data.number2);
+
+      $("#winner").html(data.winner);
+
+      // 플레이어 정보
+      $.each(data.players, function(index, players) {
+        var playerNumber = index + 1;
+        var playerDisplayNumber;
+
+        if(socket.socket.sessionid == players.key) {
+          playerDisplayNumber = 1;
+        } else {
+          playerDisplayNumber = 2;
+        }
+
+        // 키
+        $("#playerKey"+playerDisplayNumber).html(players.key);
+
+
+
+        $.each(players.cards, function(index, card) {
+          if(card.type == 1) {
+            $("#playerCardsNumber"+playerDisplayNumber).append('<button class="buttonNumber" onclick="selectCard('+playerNumber+', '+card.seq+', '+card.type+', \''+card.value+'\')">'+card.value+'</button>');
+          } else {
+            $("#playerCardsOperator"+playerDisplayNumber).append('<button class="buttonOperator" onclick="selectCard('+playerNumber+', '+card.seq+', '+card.type+', \''+card.value+'\')">'+card.value+'</button>');
+          }
+
+          // 카드 .buttonSelectAble 선택가능한 카드 css
+          // 나의 턴이면 낼 수 있는 카드에 border 처리
+          if(data.turn == 1) {
+            if(playerNumber == 1) {
+              if(data.turnType == 1) {
+                $("#playerCardsNumber"+playerDisplayNumber).addClass("buttonSelectAble");
+                $("#playerStatus"+playerDisplayNumber).html("숫자를 선택해주세요.");
+              } else {
+                $("#playerCardsOperator"+playerDisplayNumber).addClass("buttonSelectAble");
+                $("#playerStatus"+playerDisplayNumber).html("연산자를 선택해주세요.");
+              }
+            } else {
+              $("#playerStatus"+playerDisplayNumber).html("상대 플레이어 선택을 기다리는중..");
+            }
+          } else {
+            if(playerNumber == 2) {
+              if(data.turnType == 1) {
+                $("#playerCardsNumber"+playerDisplayNumber).addClass("buttonSelectAble");
+                $("#playerStatus"+playerDisplayNumber).html("숫자를 선택해주세요.");
+              } else {
+                $("#playerCardsOperator"+playerDisplayNumber).addClass("buttonSelectAble");
+                $("#playerStatus"+playerDisplayNumber).html("연산자를 선택해주세요.");
+              }
+            } else {
+              $("#playerStatus"+playerDisplayNumber).html("상대 플레이어 선택을 기다리는중..");
+            }
+          }
+        });
+      });
+
+      $(".buttonSelectAble button").hover(function() {
+        startPreView($(this).html());
+      }, function() {
+        endPreView(data.number1, data.operator, data.number2)
+      });
+
+      $(".buttonSelectAble button").bind('touchstart', function(e) {
+        // 미리보기 시전
+        startPreView($(this).html());
+      });
+
+      $(".buttonSelectAble button").bind('touchend', function(e) {
+        endPreView(data.number1, data.operator, data.number2)
+      });
+
+      $(".buttonSelectAble button").bind('touchmove ', function(e) {
+
+      });
+
+      // 승리자 표시
+      switch (data.winner) {
+        case 1 : alert('player1 win!'); break;
+        case 2 : alert('player2 win!'); break;
+        case 3 : alert('draw!'); break;
+        default : break;
+      }
+
+    }
+
+    // 카드 선택
+    function selectCard(playerNumber, cardSeq, cardType, cardValue) {
+      socket.emit("selectCard", {playerNumber:playerNumber, cardSeq:cardSeq, cardType:cardType, cardValue:cardValue});
+    }
+
+    // 미리보기
+    function startPreView(val) {
+
+      if($("#number1").html() == "?") {
+        $("#number1").html(val);
+        return;
+      }
+      if($("#operator").html() == "?") {
+        $("#operator").html(val);
+        return;
+      }
+
+      if($("#number2").html() == "?") {
+
+        var number1 = parseInt($("#number1").html());
+        var operator = $("#operator").html()
+        var number2 = parseInt(val);
+
+        var resultValue;
+
+        switch (operator) {
+          case '+' : resultValue = number1 + number2; break;
+          case '-' : resultValue = number1 - number2; break;
+          case '*' : resultValue = number1 * number2; break;
+          case '/' : resultValue = Math.floor(number1 / number2); break; // 소수점 버림
+          default : break;
+        }
+
+        $("#number2").html(val);
+        $("#preResult").html(resultValue);
+        return;
+      }
+    }
+
+    // 미리보기 종료
+    function endPreView(number1, operator, number2) {
+      $("#number1").html(number1);
+      $("#operator").html(operator);
+      $("#number2").html(number2);
+      $("#preResult").html("?");
+    }
+
+  </script>
+</head>
+<body>
+  <div id="header">
+    <button id="startGame" class="buttonStart">게임시작</button>
+  </div>
+  <div id="wrap">
+    <div id="player2">
+      <p id="playerCardsOperator2"></p>
+      <p id="playerCardsNumber2"></p>
+      <p id="playerName2">상대 플레이어</p>
+    </div>
+    <div id="calc">
+      <button id="number1" class="buttonNumber"></button><button id="operator" class="buttonOperator"></button><button id="number2" class="buttonNumber"></button><button class="buttonOperator">=</button><button id="preResult" class="buttonResult">?</button>
+    </div>
+    <div id="player1">
+      <p id="playerName1">나</p>
+      <p id="playerCardsNumber1"></p>
+      <p id="playerCardsOperator1"></p>
+    </div>
+
+  </div>
+  <div id="footer">
+    <p id="playerStatus1"></p>
+    <button id="endGame" class="buttonEnd">게임종료</button>
+  </div>
+
+</body>
+
+</html>
