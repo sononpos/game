@@ -2,6 +2,7 @@ var express = require('express');
 var stylus = require('stylus');
 var nib = require('nib');
 var sio = require('socket.io');
+var fs = require('fs');
 
 var app = express.createServer();
 
@@ -22,6 +23,10 @@ var port = process.env.PORT || 3000;
 app.listen(port, function () {
   var addr = app.address();
   console.log('   app listening on http://' + addr.address + ':' + addr.port);
+});
+
+app.get('/', function(req, res) {
+  res.redirect('/game.html');
 });
 
 var io = sio.listen(app);
