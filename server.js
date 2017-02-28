@@ -3,6 +3,8 @@ var stylus = require('stylus');
 var nib = require('nib');
 var sio = require('socket.io');
 var fs = require('fs');
+var request = require("request");
+var cheerio = require("cheerio");
 
 var app = express.createServer();
 
@@ -366,3 +368,28 @@ function randomBackground(min, max, choice) {
 
     return bgResult;
 }
+
+
+app.get('/clien/:page', function(req, res) {
+  var url = "http://m.clien.net/cs3/board?bo_style=lists&bo_table=park&page="+req.params.page;
+
+  request(url, function(error, response, body) {
+    var result = [];
+    if (error) throw error;
+
+    var $ = cheerio.load(body);
+
+    $("div.wrap_tit").each(function() {
+
+      if($(this).find(".lst_category").html() == '') {
+        var com_title = $(this).find(".lst_tit").text();
+        var com_link = $(this).attr("onclick");
+
+        result.push({title:com_title, link:com_link});
+      }
+    });
+
+    res.contentType('application/json');
+    res.send(JSON.stringify(result));
+  });
+});
