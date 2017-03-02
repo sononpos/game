@@ -3,7 +3,7 @@ var stylus = require('stylus');
 var nib = require('nib');
 var sio = require('socket.io');
 var fs = require('fs');
-var request = require("request");
+//var request = require("request");
 // var cheerio = require("cheerio");
 
 var app = express.createServer();
